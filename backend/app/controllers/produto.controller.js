@@ -1,6 +1,28 @@
 const produtoModel = require("../models/produto.model.js");
 
-exports.create = (req, res) => { }
+exports.create = (req, res) => {
+    if (!req.body.nome || !req.body.valor){
+        res.status(400).send({
+            message: "Conteúdo do corpo da requisição vazia."
+        });
+    } else {
+        const produto = new produtoModel({
+            nome: req.body.nome,
+            valor: req.body.valor
+        });
+
+        produtoModel.create(produto, (err, data) => {
+            if (err){
+                res.status(500).send({
+                    message: err.message || "Ocorreu um erro ao inserir os dados"
+                });
+            } else {
+                res.send(data);
+            }
+        });
+    }
+}
+
 exports.findAll = (req, res) => {
     produtoModel.getAll((err, data) =>{
         if (err) {
@@ -12,9 +34,28 @@ exports.findAll = (req, res) => {
         }
     });
 }
-    exports.findById = (req, res) => { }
-    exports.update = (req, res) => { }
+    exports.findById = (req, res) => {
+        produtoModel.findById(req.params.produtoId, (err,data) => {
+            if (err) {
+                if(err.type == "not_found"){
+                    res.status(404).send({
+                        message: "Produto não encontrado! . ID: " + req.params.produtoId
+                    });
+                }else{
+                    res.status(500).send({
+                        message: "Erro ao retornar o produto com ID: "+req.params.produtoId
+                    })
+                }
+        }else {
+            res.send(data);
+        }
+    });
+};
+    exports.update = (req, res) => {
+        produtoModel.update
+     }
     exports.delete = (req, res) => { }
     exports.deleteAll = (req, res) => { }
+
 
 
