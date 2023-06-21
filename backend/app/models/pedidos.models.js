@@ -1,7 +1,7 @@
 const sql = require("./db.js");
 const pedidoModel = function (pedido) {
-    this.nome = pedido.nome;
-    this.valor = pedido.valor;
+    this.hora = pedido.hora;
+    this.status = pedido.status;
 }
 pedidoModel.create = (pedido, result) => {
     sql.query("insert into pedidos set ?", pedido, (err, res) => {
@@ -15,9 +15,9 @@ pedidoModel.create = (pedido, result) => {
         result(null, {idpedidos: res.insertId, ...pedido});
     })
 };
-pedidoModel.findById = (pedidoId, result) => {
+pedidoModel.findById = (pedidosId, result) => {
     
-    sql.query("SELECT * FROM pedidos where idpedidos = "+pedidoId, (err,res) => {
+    sql.query("SELECT * FROM pedidos where idpedidos = "+pedidosId, (err,res) => {
         if (err) {
             console.log("Erro: ", err);
             result(null, err);
@@ -44,24 +44,24 @@ pedidoModel.getAll = result => {
     })
 
 };
-pedidoModel.updateById = (pedidoId, pedido, result) => {
-    sql.query("UPDATE pedidos SET nome = ?, valor = ? WHERE idpedidos = ?",
-        [pedido.nome, pedido.valor, pedidoId], (err, res) => {
+pedidoModel.updateById = (pedidosId, pedido, result) => {
+    sql.query("UPDATE pedidos SET status = ?, hora = ? WHERE idpedidos = ?",
+        [pedido.status, pedido.hora, pedidosId], (err, res) => {
             if(err){
                 console.log("erro: ",err);
                 result(null, err);
             }else if (res.affectdRows == 0){
                 result({ type: "not_found"}, null);
             }else {
-                console.log("pedido Atualizado", {idpedidos: pedidoId, ...pedido});
-                result(null, {idpedidos: pedidoId, ...pedido});
+                console.log("pedido Atualizado", {idpedidos: pedidosId, ...pedido});
+                result(null, {idpedidos: pedidosId, ...pedido});
     }
         });
 
  };
 
-pedidoModel.remove = (pedidoId, result) => {
-    sql.query("DELETE FROM pedidos WHERE idpedidos = ?", pedidoId, (err, res) =>{
+pedidoModel.remove = (pedidosId, result) => {
+    sql.query("DELETE FROM pedidos WHERE idpedidos = ?", pedidosId, (err, res) =>{
         if (err) {
             console.log("erro: ", err);
             result(err, null);
@@ -73,7 +73,7 @@ pedidoModel.remove = (pedidoId, result) => {
     });
  };
 pedidoModel.removeAll = (result) => {
-    sql.query("DELETE FROM pedidos", pedidoId, (err, res) =>{
+    sql.query("DELETE FROM pedidos", pedidosId, (err, res) =>{
         if (err) {
             console.log("erro: ", err);
             result(err, null);

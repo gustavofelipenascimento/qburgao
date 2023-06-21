@@ -1,96 +1,90 @@
 const sql = require("./db.js");
-//Construtor
-const pedidos_produtosModel = function (pedidos_produtos) {
-    this.observacao = pedidos_produtos.observacao;
-    this.idpedidos_produtos = pedidos_produtos.idpedidos_produtos;
-    this.produtos_idprodutos = pedidos_produtos.produtos_idprodutos;
-    this.pedidos_idpedidos = this.produtos_idprodutos.pedidos_idpedidos;
+
+const Produto_PedidoModel = function(produtos_pedidos){
+    this.observacao = produtos_pedidos.observacao;
+    this.produtos_idprodutos = produtos_pedidos.produtos_idprodutos;
+    this.pedidos_idpedidos = produtos_pedidos.pedidos_idpedidos;
 }
-//Cria novo pedidos_produtos no banco
-pedidos_produtosModel.create = (pedidos_produtos, result) => {
-    sql.query("insert into pedidos_produtos set ?", pedidos_produtos, (err, res) => {
+
+Produto_PedidoModel.create = (produtos_pedidos, result) => {
+    sql.query("insert produtos_pedidos set ?", produtos_pedidos, (err, res) =>{
         if (err){
             console.log("Erro: ", err);
             result(err, null);
             return;
         }
-
-        console.log("pedidos_produtos criado: ", {idpedidos_produtos: res.insertId, ...pedidos_produtos});
-        result(null, {idpedidos_produtos: res.insertId, ...pedidos_produtos});
+        console.log("Produto criado: ", {idprodutos_pedidos: res.insertId, ...produtos_pedidos});
+        result(null, {idprodutos_pedidos: res.insertId, ...produtos_pedidos});
     })
-};
 
 
-//Seleciona pedidos_produtos por ID
-pedidos_produtosModel.findById = (pedidos_produtosId, result) => {
-    
-    sql.query("SELECT * FROM pedidos_produtos where idpedidos_produtos = "+pedidos_produtosId, (err,res) => {
-        if (err) {
-            console.log("Erro: ", err);
-            result(null, err);
-            return;
-    }
-    if (res.length){
-        console.log("pedidos_produtos Encontrado", res[0]);
-        result(null, res[0]);
-    }else {
-        result({type: "not_found"},null);
-        console.log("pedidos_produtos não encontrado");
-    }
- })
 };
-//Seleciona todos os pedidos_produtos
-pedidos_produtosModel.getAll = result => {
-    sql.query("SELECT * FROM pedidos_produtos", (err, res) => {
-        if (err) {
-            console.log("Erro:",err);
+Produto_PedidoModel.findById = (produto_pedidoId, result) => {
+    sql.query("Select * from produtos_pedidos where idprodutos_pedidos = "+produto_pedidoId, (err, res) =>{
+        if(err){
+            console.log("erro: ", err);
             result(null, err);
             return;
         }
-        console.log("pedidos_produtos:", res);
+        if(res.length){
+            console.log("Produto/Pedido Encontrado", res[0]);
+            result(null,res[0]);
+        }else {
+            result({type: "not_found"}, null);
+            console.log("Produto/Pedido não encontrado");
+        }
+    })
+};
+Produto_PedidoModel.getAll = result => {
+    sql.query("SELECT * FROM produtos_pedidos", (err, res) => {
+        if (err) {
+            console.log("erro: ", err);
+            result(null, err);
+            return;
+        }
+
+        console.log("produtos_pedidos: ", res);
         result(null, res);
     })
-
 };
-//Atualizar pedidos_produtos por id
-pedidos_produtosModel.updateById = (pedidos_produtosId, pedidos_produtos, result) => {
-    sql.query("UPDATE pedidos_produtos SET nome = ?, valor = ? WHERE idpedidos_produtos = ?",
-        [pedidos_produtos.nome, pedidos_produtos.valor, pedidos_produtosId], (err, res) => {
-            if(err){
-                console.log("erro: ",err);
-                result(null, err);
-            }else if (res.affectdRows == 0){
-                result({ type: "not_found"}, null);
-            }else {
-                console.log("pedidos_produtos Atualizado", {idpedidos_produtos: pedidos_produtosId, ...pedidos_produtos});
-                result(null, {idpedidos_produtos: pedidos_produtosId, ...pedidos_produtos});
-    }
-        });
-
- };
-//Remover pedidos_produtos por id
-pedidos_produtosModel.remove = (pedidos_produtosId, result) => {
-    sql.query("DELETE FROM pedidos_produtos WHERE idpedidos_produtos = ?", pedidos_produtosId, (err, res) =>{
-        if (err) {
+Produto_PedidoModel.updateById = (produto_pedidoId, produtos_pedidos,result) => {
+    sql.query("UPDATE produtos_pedidos SET observacao = ?, produtos_idprodutos =?, pedidos_idpedidos = ? WHERE idprodutos_pedidos = ?",
+    [produtos_pedidos.observacao,produtos_pedidos.produtos_idprodutos,produtos_pedidos.pedidos_idpedidos , produto_pedidoId], (err, res) =>{
+        if (err){
+            console.log("erro: ", err);
+            result(null, err);
+        }else if(res.affectedRows == 0){
+            result({type: "not_found"}, null);
+        }else {
+            console.log("Produto/Pedido atualizado: ",{idprodutos_pedidos: produto_pedidoId, ...produtos_pedidos});
+            result(null, {idprodutos_pedidos: produto_pedidoId, ...produtos_pedidos});
+        }
+            
+        
+    })
+};
+Produto_PedidoModel.remove = (produto_pedidoId, result) => {
+    sql.query("DELETE FROM produtos_pedidos WHERE idprodutos_pedidos = ?", produto_pedidoId, (err, res) => {
+        if(err){
             console.log("erro: ", err);
             result(err, null);
-        } else if (res.affectedRows == 0){
-            result({ tyoe: "not_found"},null);
-        } else { 
+        }else if (res.affectedRows == 0){
+            result ({ type: "not_found"}, null);
+        }else {
             result(null, res);
         }
     });
- };
-//Remover todos os pedidos_produtos
-pedidos_produtosModel.removeAll = (result) => {
-    sql.query("DELETE FROM pedidos_produtos", pedidos_produtosId, (err, res) =>{
-        if (err) {
+};
+
+Produto_PedidoModel.removeAll = (result) => {
+    sql.query("DELETE FROM produtos_pedidos", produto_pedidoId, (err, res) => {
+        if(err){
             console.log("erro: ", err);
             result(err, null);
-        } else { 
+        } else {
             result(null, res);
         }
     });
- };
+};
 
-module.exports = pedidos_produtosModel;
+module.exports = Produto_PedidoModel;

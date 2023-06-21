@@ -1,14 +1,14 @@
 const pedidoModel = require("../models/pedidos.models.js");
 
 exports.create = (req, res) => {
-    if (!req.body.nome || !req.body.valor){
+    if (!req.body.hora || !req.body.status){
         res.status(400).send({
             message: "Conteúdo do corpo da requisição vazia."
         });
     } else {
         const pedido = new pedidoModel({
-            nome: req.body.nome,
-            valor: req.body.valor
+            hora: req.body.hora,
+            status: req.body.status
         });
 
         pedidoModel.create(pedido, (err, data) => {
@@ -35,15 +35,15 @@ exports.findAll = (req, res) => {
     });
 }
     exports.findById = (req, res) => {
-        pedidoModel.findById(req.params.pedidoId, (err,data) => {
+        pedidoModel.findById(req.params.pedidosId, (err,data) => {
             if (err) {
                 if(err.type == "not_found"){
                     res.status(404).send({
-                        message: "pedido não encontrado! . ID: " + req.params.pedidoId
+                        message: "pedido não encontrado! . ID: " + req.params.pedidosId
                     });
                 }else{
                     res.status(500).send({
-                        message: "Erro ao retornar o pedido com ID: "+req.params.pedidoId
+                        message: "Erro ao retornar o pedido com ID: "+req.params.pedidosId
                     })
                 }
         }else {
@@ -52,16 +52,16 @@ exports.findAll = (req, res) => {
     });
 };
     exports.update = (req, res) => {
-        if(!req.body.nome || !req.body.valor){
+        if(!req.body.hora || !req.body.status){
             res.status(400).send({
                 message: "Conteúdo do corpo da requisição vazia."
             });
         }else { 
             const pedido = new pedidoModel({
-                nome: req.body.nome,
-                valor: req.body.valor
+                hora: req.body.hora,
+                status: req.body.status
             });
-            pedidoModel.updateById(req.params.pedidoId, pedido, (err, data) =>{
+            pedidoModel.updateById(req.params.pedidosId, pedido, (err, data) =>{
             if (err){
                 if (err.type == "not found") {
                     res.status(404).send({
@@ -80,7 +80,7 @@ exports.findAll = (req, res) => {
         }
           
     exports.delete = (req, res) => {
-        pedidoModel.remove(req.params.pedidoId, (err, data) => {
+        pedidoModel.remove(req.params.pedidosId, (err, data) => {
             if (err){
                 if(err.type == "not_found"){
                     res.status(404).send({message:"pedido não encontrado."})

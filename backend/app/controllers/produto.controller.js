@@ -80,7 +80,7 @@ exports.findAll = (req, res) => {
         }
           
     exports.delete = (req, res) => {
-        ProdutoModel.remove(req.params.produtoId, (err, data) => {
+        produtoModel.remove(req.params.produtoId, (err, data) => {
             if (err){
                 if(err.type == "not_found"){
                     res.status(404).send({message:"Produto não encontrado."})
